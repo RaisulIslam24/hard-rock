@@ -6,16 +6,24 @@
 // const data = await res.json()
 // displaySongs(data.data);
 
-const searchSongs = () =>{
+document.getElementById("search-field")
+    .addEventListener("keypress", function (event) {
+        if (event.key === 'Enter') {
+            document.getElementById("search-button").click();
+        }
+    });
+
+const searchSongs = () => {
     const searchText = document.getElementById('search-field').value;
     const url = `https://api.lyrics.ovh/suggest/${searchText}`
+    toggleSpinner();
     // load data
     fetch(url)
-    .then(res => res.json())
-    .then(data => displaySongs(data.data))
-    .catch(error => displayError('Something Went Wrong!! Please try again later!'))
+        .then(res => res.json())
+        .then(data => displaySongs(data.data))
+        .catch(error => displayError('Something Went Wrong!! Please try again later!'))
 }
-const displaySongs = songs =>{
+const displaySongs = songs => {
     const songContainer = document.getElementById('song-container');
     songContainer.innerHTML = '';
     songs.forEach(song => {
@@ -34,17 +42,18 @@ const displaySongs = songs =>{
         </div>
         `;
         songContainer.appendChild(songDiv);
+        toggleSpinner();
     })
 }
 
-const getLyric = async(artist, title) => {
+const getLyric = async (artist, title) => {
     const url = `https://api.lyrics.ovh/v1/${artist}/${title}`
-    try{
+    try {
         const res = await fetch(url);
         const data = await res.json();
         displayLyrics(data.lyrics);
     }
-    catch(error){
+    catch (error) {
         displayError('Sorry! I failed to load lyrics, Please try again later!!!');
     }
 }
@@ -64,4 +73,11 @@ const displayLyrics = lyrics => {
 const displayError = error => {
     const errorTag = document.getElementById('error-message');
     errorTag.innerText = error;
+}
+
+const toggleSpinner = () => {
+    const spinner = document.getElementById('loding-spinner');
+    const songs = document.getElementById('song-container');
+    spinner.classList.toggle('d-none');
+    songs.classList.toggle('d-none');
 }
